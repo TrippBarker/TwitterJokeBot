@@ -6,11 +6,11 @@ lastMention = 0
 with open ('lastMention.txt', 'r') as file:
     lastMention = int(file.read())
 
-twitterBearerPath = "D:\KEYS\JokeTwitBear.txt"
-twitterApiKeyPath = "D:\KEYS\JokeTwitKey.txt"
-twitterApiSecPath = "D:\KEYS\JokeTwitKeySec.txt"
-twitterAccessTokenPath = "D:\KEYS\TwitToken.txt"
-twitterAccessSecPath = "D:\KEYS\TwitTokenSec.txt"
+twitterBearerPath = "<TWITTER BEARER TOKEN>"
+twitterApiKeyPath = "<TWITTER API KEY>"
+twitterApiSecPath = "<SECRET TWITTER API KEY>"
+twitterAccessTokenPath = "<TWITTER ACCESS TOKEN>"
+twitterAccessSecPath = "<SECRET TWITTER ACCESS TOKEN>"
 twitterKeyPaths = [twitterBearerPath, twitterApiKeyPath, twitterApiSecPath, twitterAccessTokenPath, twitterAccessSecPath]
 
 twitterKeychain = []
@@ -20,7 +20,7 @@ for keyPath in twitterKeyPaths:
     fileContent = file.read()
     twitterKeychain.append(fileContent)
 
-openai.api_key_path = "D:\KEYS\JokeKey.txt"
+openai.api_key_path = "<OPEN AI API KEY>"
 model_engine = "text-davinci-003"
 
 client = tweepy.Client(twitterKeychain[0], twitterKeychain[1], twitterKeychain[2], twitterKeychain[3], twitterKeychain[4])
@@ -44,11 +44,13 @@ def promptGPT(userPrompt):
     print("======================================")
     return completion.choices[0].text
 
-def checkMentions():
+
+while True:
+    clientMentions = client.get_users_mentions(clientID)
     if clientMentions != None:
         for mention in clientMentions.data:
             try:
-                if int(mention.id) > int(lastMention):
+                if int(mention.id) - int(lastMention) > 0:
                     lastMention = int(mention.id)
                     print(mention.id)
                     with open('lastMention.txt', 'w') as file:
@@ -56,7 +58,4 @@ def checkMentions():
                     client.create_tweet(in_reply_to_tweet_id=mention.id, text=promptGPT(mention.text))
             except:
                 pass
-
-while True:
-    checkMentions()
     time.sleep(5)
