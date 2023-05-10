@@ -1,6 +1,6 @@
 import openai
 
-openai.api_key_path = '<OPENAI API KEY GOES HERE>'
+openai.api_key_path = '<OPENAI API KEY PATH GOES HERE>'
 model_engine = "text-davinci-003"
 
 def promptGPT(userPrompt):
@@ -14,5 +14,7 @@ def promptGPT(userPrompt):
         temperature = 1,
     )
     return completion.choices[0].text
+
+
 
 print(promptGPT("tell me a joke"))
